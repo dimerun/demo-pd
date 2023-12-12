@@ -1,0 +1,20 @@
+name: Persistent Disk Demo
+on:
+  workflow_dispatch:
+env:
+  PD: /home/runner/.cache
+jobs:
+  demo:
+    runs-on: dimerun-d3-ubuntu2204
+    steps:
+    - name: Mount Persistent Disk
+      run: |
+        sudo lsblk
+        sudo mkfs.btrfs /dev/sdb || true
+        sudo mount /dev/sdb $PD
+        sudo df -hT
+        sudo chown -cR runner $PD
+    - run: |
+        date >> $PD/dates.txt
+        cat $PD/dates.txt
+        echo "🎉 This job uses persistent disk!"
